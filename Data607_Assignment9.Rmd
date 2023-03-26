@@ -1,0 +1,98 @@
+---
+title: "Data 607 Assignment 9"
+author: "Mohamed Hassan-El Serafi"
+date: "2023-03-26"
+output: html_document
+---
+
+
+
+Using an API key for The New York Times, I retrieved data of most viewed articles on NYTimes.com in the past 30 days: 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=F, warnings=F)
+```
+
+
+```{r}
+library(tidyverse)
+library(RCurl)
+library(rjson)
+library(DT)
+library(data.table)
+library(httr)
+library(kableExtra)
+```
+
+
+
+
+
+#### Storing API link 
+
+
+
+```{r}
+nyt_json_url <- "https://api.nytimes.com/svc/mostpopular/v2/viewed/30.json?api-key=BG3ZhQtYKZ7YG8bmO5ei49K4qG1mHYQh"
+```
+
+
+
+#### Converting JSON link to DataFrame:
+
+
+```{r}
+json_df <- jsonlite::fromJSON(nyt_json_url) 
+nyt_json_df <- json_df$results
+DT::datatable(nyt_json_df, filter="top")
+```
+
+
+#### Using the class() function confirm it is a DataFrame:
+
+```{r}
+class(nyt_json_df)
+```
+
+#### Checking column names
+
+```{r}
+colnames(nyt_json_df)
+```
+
+#### Selecting and Renaming Columns
+
+
+```{r}
+new_nyt_json_df <- nyt_json_df %>%
+  select("published_date", "section", "subsection", "byline", "title", "abstract") %>%
+  rename("text" = "abstract") %>%
+  arrange(desc(published_date))
+DT::datatable(new_nyt_json_df, filter="top")
+```
+
+
+
+
+
+#### Count of which section had most viewed articles in the last 30 days
+
+```{r}
+new_nyt_json_df2 <- new_nyt_json_df %>%
+  group_by(section) %>%
+  summarise(count=n()) %>%
+  arrange(desc(count))
+new_nyt_json_df2
+```
+
+
+```{r}
+ggplot(new_nyt_json_df2, aes(x=reorder(section, -count), count)) +
+  geom_bar(stat="identity", position="dodge")
+```
+
+
+
+Articles in the U.S. section were the most viewed on The New York Times website in the past 30 days.  
+
+
