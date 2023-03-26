@@ -30,8 +30,6 @@ library(kableExtra)
 
 #### Storing API link 
 
-
-
 ```{r}
 nyt_json_url <- "https://api.nytimes.com/svc/mostpopular/v2/viewed/30.json?api-key=BG3ZhQtYKZ7YG8bmO5ei49K4qG1mHYQh"
 ```
