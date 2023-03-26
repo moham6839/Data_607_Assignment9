@@ -46,7 +46,7 @@ DT::datatable(nyt_json_df, filter="top")
 ```
 
 
-#### Using the class() function confirm it is a DataFrame:
+#### Using the class() function  to confirm it is a DataFrame:
 
 ```{r}
 class(nyt_json_df)
